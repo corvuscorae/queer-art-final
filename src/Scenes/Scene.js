@@ -1,19 +1,20 @@
-class sceneName extends Phaser.Scene {
+export default class MyScene extends Phaser.Scene {
     constructor() {
         super("sceneKey");
     }
 
-    init() {
+    init(data) {
         this.tileset = {
             name: "greys_Packed", 
             key: "grey-tiles",    
             tileWidth: 16,
             tileHeight: 16
         };
+
+        this.base = data.base
     }
 
     create() {
-        console.log(GAME, BASE)
         console.log("Scene loaded");
 
         const map = this.add.tilemap("map") 
@@ -27,13 +28,13 @@ class sceneName extends Phaser.Scene {
         }
 
         // init
-        this.makeNoiseMap("noiseMap", "noiseLayer", BASE[0], this.tileset)
+        this.makeNoiseMap("noiseMap", "noiseLayer", this.base[0], this.tileset)
 
         // noise screen
         this.noise = this.time.addEvent({
             delay: 100, // ms
             callback: this.makeNoiseMap,
-            args: ["noiseMap", "noiseLayer", BASE[0], this.tileset],
+            args: ["noiseMap", "noiseLayer", this.base[0], this.tileset],
             callbackScope: this,
             loop: true,
             timeScale: 1,

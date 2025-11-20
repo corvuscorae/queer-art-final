@@ -1,31 +1,22 @@
-// NOTE: uses code written by Justin Lam for Sketchtiler
+// NOTE: uses logic from code written by Justin Lam for Sketchtiler
 // https://github.com/blytheSchen/SketchTiler/blob/main/src/5_Utility/DataMiner.js
 
 // Used to extract the tile ID matrices from a tilemap's layers.
 const key = "base";
 
 export default class DataMiner {
-  constructor() {  }
+  constructor(data) {
+    this.json = data.json
+    this.name = data.name
+  }
 
-  async run(path, key) {
-    // learning source: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON
-    // also ChatGPT
+  run() {
     const result = [];
     let str = "[\n";
 
-    const response = await fetch(path);
-    if (!response.ok) throw new Error(`There was an error with fetching ${path}.`);
+    str += `\t// ${this.name} \n`;
 
-    let json;
-    try {
-      json = await response.json();
-    } catch {
-      throw new Error(`There is a problem with the contents of ${path}.`);
-    }
-
-    str += `\t// ${key} \n`;
-
-    for (const layer of json.layers) {
+    for (const layer of this.json.layers) {
       const matrix = this.createMatrixFromArray(layer.width, layer.height, layer.data);
       result.push(matrix)
 

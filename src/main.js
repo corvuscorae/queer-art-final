@@ -1,7 +1,7 @@
 "use strict" // debug with extreme prejudice
 
-import DataMiner from "./Utils/DataMiner.js";
-const dataMiner = new DataMiner();
+import Load from "./Scenes/Load.js";
+import MyScene from "./Scenes/Scene.js";
 
 // game config
 let config = {
@@ -12,9 +12,8 @@ let config = {
     },
     width: 1280,
     height: 800,
-    scene: [Load, sceneName]
+    scene: [Load, MyScene]
 }
 
 // globals
-window.BASE = await dataMiner.run(`../../assets/base.tmj`, `base`)
 window.GAME = new Phaser.Game(config);
