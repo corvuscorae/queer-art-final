@@ -22,7 +22,7 @@ export default class MyScene extends Phaser.Scene {
     }
 
     create() {
-        var colorPicker = new iro.ColorPicker('#picker');
+        // var colorPicker = new iro.ColorPicker('#picker');
         console.log("Scene loaded");
         const canvasDims = {
             x: [0, window.GAME.config.width],
@@ -57,8 +57,15 @@ export default class MyScene extends Phaser.Scene {
                 this.makeNoise = false
                 const eTile = this.pixelToTile(ePixel, this.tileset.tilesize)
 
-                this.cursor = [eTile.x, eTile.y]
-
+                // update cursor position
+                if(this.base[eTile[1]][eTile[0]] > 0){ 
+                    this.cursor.pos = [
+                        eTile[0], 
+                        eTile[1]
+                    ]
+                }
+                
+                // lock tile
                 const x = eTile[0]
                 const y = eTile[1]
 
@@ -69,17 +76,25 @@ export default class MyScene extends Phaser.Scene {
 
         // cursor
         const DIR = {
-            d: [1, 0], a: [-1, 0], w: [0, 1], s: [0, -1]
+            d: [1, 0], a: [-1, 0], s: [0, 1], w: [0, -1]
         }
         this.input.keyboard.on('keydown', (e) => {
-            // console.log(e)
+            // moving cursor
+            if(e.key === "w") this.moveCell(this.cursor.pos, DIR.w, this.base)
+            if(e.key === "a") this.moveCell(this.cursor.pos, DIR.a, this.base)
+            if(e.key === "s") this.moveCell(this.cursor.pos, DIR.s, this.base)
+            if(e.key === "d") this.moveCell(this.cursor.pos, DIR.d, this.base)
 
-            // movement
-            if(e.key === "w") this.moveCell(this.cursor, DIR.w, this.base)
-            if(e.key === "a") this.moveCell(this.cursor, DIR.a, this.base)
-            if(e.key === "s") this.moveCell(this.cursor, DIR.s, this.base)
-            if(e.key === "d") this.moveCell(this.cursor, DIR.d, this.base)
-            console.log(this.cursor, this.tileAt(this.cursor, this.noiseArray))
+            // locking cell
+            if(e.key === "Enter") {
+                this.makeNoise = false
+
+                const x = this.cursor.pos[0]
+                const y = this.cursor.pos[1]
+
+                this.stateArray[y][x] = this.tileAt(this.cursor.pos, this.noiseArray);
+                this.makeNoise = true
+            }
         })
     }
 
@@ -115,13 +130,14 @@ export default class MyScene extends Phaser.Scene {
         this[layerName] = this[mapName].createLayer(0, tileset, 0, 0);
 
         // draw cursor on top
-        const rect = this.add.rectangle(
-            this.cursor[0] * noiseTileset.tilesize,
-            this.cursor[1] * noiseTileset.tilesize,
+        if(this.cursor.rect) this.cursor.rect.destroy()
+        this.cursor.rect = this.add.rectangle(
+            this.cursor.pos[0] * noiseTileset.tilesize,
+            this.cursor.pos[1] * noiseTileset.tilesize,
             noiseTileset.tilesize, noiseTileset.tilesize
         )
-        rect.setOrigin(0)
-        rect.setStrokeStyle(2, 0xffffff)
+        this.cursor.rect.setOrigin(0)
+        this.cursor.rect.setStrokeStyle(2, 0xffffff)
     }
 
     noiseField(baseData, lockedTiles, tiles){
@@ -136,7 +152,7 @@ export default class MyScene extends Phaser.Scene {
                     tile = lockedTiles[j][i]
                 if(tile < 0 && baseData[j][i] > 0) tile = Phaser.Math.Between(0, tiles - 1)
                 
-                if(!this.cursor && baseData[j][i] > 0) this.cursor = [i, j] // init cursor
+                if(!this.cursor && baseData[j][i] > 0) this.cursor = { pos: [i, j] } // init cursor
                 noise[j].push(tile)
             }
         }
@@ -161,9 +177,16 @@ export default class MyScene extends Phaser.Scene {
         )
     }
 
-    moveCell(cell, dir){
-        cell[0] += dir[0]
-        cell[1] += dir[1]
+    moveCell(cell, dx){
+        let n = {
+            x: cell[0] + dx[0],
+            y: cell[1] + dx[1]
+        }
+
+        if(this.base[n.y][n.x] > 0){
+            cell[0] = n.x
+            cell[1] = n.y
+        }
     }
 
     nextDrawnTile(pos, tilemap){
