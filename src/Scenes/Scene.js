@@ -22,6 +22,7 @@ export default class MyScene extends Phaser.Scene {
     }
 
     create() {
+        var colorPicker = new iro.ColorPicker('#picker');
         console.log("Scene loaded");
         const canvasDims = {
             x: [0, window.GAME.config.width],
