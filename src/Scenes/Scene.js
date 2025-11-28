@@ -24,13 +24,20 @@ export default class MyScene extends Phaser.Scene {
     create() {
         // var colorPicker = new iro.ColorPicker('#picker');
         console.log("Scene loaded");
-        const canvasDims = {
+        this.canvasDims = {
             x: [0, window.GAME.config.width],
             y: [0, window.GAME.config.height]
         }
 
         const map = this.add.tilemap("map") 
         this.tilesheet = map.addTilesetImage(this.tileset.name, this.tileset.key);
+
+        this.house = [];
+        this.color = {
+            r: 0, g: 255, b: 255
+        };
+        this.clickCount = 0
+        this.clickPos = null
 
         // NOISE 
         this.makeNoise = true
@@ -53,7 +60,7 @@ export default class MyScene extends Phaser.Scene {
         this.input.on('pointerdown', (e) => {
             const ePixel = [e.x, e.y]
 
-            if(this.inRange(ePixel, canvasDims)) {
+            if(this.inRange(ePixel, this.canvasDims)) {
                 this.makeNoise = false
                 const eTile = this.pixelToTile(ePixel, this.tileset.tilesize)
 
@@ -69,8 +76,24 @@ export default class MyScene extends Phaser.Scene {
                 const x = eTile[0]
                 const y = eTile[1]
 
-                this.stateArray[y][x] = this.tileAt(eTile, this.noiseArray);
+                // this.stateArray[y][x] = this.tileAt(eTile, this.noiseArray);
+                this.clickCount++
+                if(this.tileAt(eTile, this.base) > 0) this.placeRectData(eTile, this.tileset)
                 this.makeNoise = true
+
+                this.clickPos = eTile
+            } 
+        })
+
+        this.input.on('pointerup', () => { this.clickPos = null })
+
+        this.input.on('pointermove', (e) => {
+            if(this.clickPos){
+                const x = this.clickPos[0] * this.tileset.tilesize
+                const y = this.clickPos[1] * this.tileset.tilesize
+
+                // change color
+                this.changeColorAt([x, y], [e.position.x, e.position.y])
             }
         })
 
@@ -92,7 +115,8 @@ export default class MyScene extends Phaser.Scene {
                 const x = this.cursor.pos[0]
                 const y = this.cursor.pos[1]
 
-                this.stateArray[y][x] = this.tileAt(this.cursor.pos, this.noiseArray);
+                // this.stateArray[y][x] = this.tileAt(this.cursor.pos, this.noiseArray);
+                this.placeRectData(this.cursor.pos, this.tileset)
                 this.makeNoise = true
             }
         })
@@ -128,6 +152,20 @@ export default class MyScene extends Phaser.Scene {
 
         // create layer from map
         this[layerName] = this[mapName].createLayer(0, tileset, 0, 0);
+
+        // draw all rects on top
+        for(const tile of this.house){
+            if(tile.rect) tile.rect.destroy()
+            
+            tile.rect = this.add.rectangle(
+                tile.x, tile.y, tile.w, tile.h
+            )
+
+            tile.rect.setOrigin(0)
+
+            const col = Phaser.Display.Color.HSLToColor(tile.color.h, tile.color.s, tile.color.l)
+            tile.rect.setFillStyle(col.color)
+        }
 
         // draw cursor on top
         if(this.cursor.rect) this.cursor.rect.destroy()
@@ -189,10 +227,37 @@ export default class MyScene extends Phaser.Scene {
         }
     }
 
-    nextDrawnTile(pos, tilemap){
-        // find next nonempty tile in tile map
-        // left->right, up->down
+    placeRectData(pos, tilesetInfor){
+        const x = pos[0] * tilesetInfor.tilesize
+        const y = pos[1] * tilesetInfor.tilesize
 
+        const rect = {
+            x: x,
+            y: y,
+            w: tilesetInfor.tilesize, 
+            h: tilesetInfor.tilesize,
+            color: { 
+                h: this.map(x, this.canvasDims.x[0], this.canvasDims.x[1], 0, 1),
+                s: 1,
+                l: this.map(y, this.canvasDims.y[0], this.canvasDims.y[1], 0, 1),
+            }
+        }
+        
+        this.house.push(rect)
+    }
+
+    changeColorAt(pos, to){
+        for(const rect of this.house){
+            if(rect.x === pos[0] && rect.y === pos[1]){
+                rect.color.h = this.map(to[0], this.canvasDims.x[0], this.canvasDims.x[1], 0, 1)
+                rect.color.s = 1
+                rect.color.l = this.map(to[1], this.canvasDims.y[0], this.canvasDims.y[1], 0, 1)
+            }
+        }
+    }
+
+    map(val, origMin, origMax, newMin, newMax){
+        return newMin + (val - origMin) * ((newMax - newMin)/(origMax - origMin))
     }
 
 }
