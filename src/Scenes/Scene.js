@@ -119,28 +119,69 @@ export default class MyScene extends Phaser.Scene {
         })
 
         // cursor
-        const DIR = {
+        this.DIR = {
             d: [1, 0], a: [-1, 0], s: [0, 1], w: [0, -1]
         }
+        this.moved = {
+            at: -1,
+            delay: 100
+        }
+
+        // keys
+        this.W_key = this.input.keyboard.addKey("W");
+        this.A_key = this.input.keyboard.addKey("A");
+        this.S_key = this.input.keyboard.addKey("S");
+        this.D_key = this.input.keyboard.addKey("D");
+
+        this.Enter_key = this.input.keyboard.addKey("Enter");
+
         this.input.keyboard.on('keydown', (e) => {
-            // moving cursor
-            if(e.key === "w") this.moveCell(this.cursor.pos, DIR.w, this.base)
-            if(e.key === "a") this.moveCell(this.cursor.pos, DIR.a, this.base)
-            if(e.key === "s") this.moveCell(this.cursor.pos, DIR.s, this.base)
-            if(e.key === "d") this.moveCell(this.cursor.pos, DIR.d, this.base)
-
             // locking cell
-            if(e.key === "Enter") {
-                this.makeNoise = false
+            // if(e.key === "Enter") {
+            //     this.makeNoise = false
 
-                const x = this.cursor.pos[0]
-                const y = this.cursor.pos[1]
+            //     const x = this.cursor.pos[0]
+            //     const y = this.cursor.pos[1]
 
-                // this.stateArray[y][x] = this.tileAt(this.cursor.pos, this.noiseArray);
-                this.placeRectData(this.cursor.pos, this.tileset)
-                this.makeNoise = true
-            }
+            //     // this.stateArray[y][x] = this.tileAt(this.cursor.pos, this.noiseArray);
+            //     this.placeRectData(this.cursor.pos, this.tileset)
+            //     this.makeNoise = true
+            // }
         })
+    }
+
+    update(){
+        // moving cursor
+        if(this.moveable() && this.W_key.isDown) { 
+            this.moved.at = this.time.now
+            this.moveCell(this.cursor.pos, this.DIR.w, this.base) 
+        }
+        if(this.moveable() && this.A_key.isDown) { 
+            this.moved.at = this.time.now
+            this.moveCell(this.cursor.pos, this.DIR.a, this.base) 
+        }
+        if(this.moveable() && this.S_key.isDown) { 
+            this.moved.at = this.time.now
+            this.moveCell(this.cursor.pos, this.DIR.s, this.base) 
+        }
+        if(this.moveable() && this.D_key.isDown) { 
+            this.moved.at = this.time.now
+            this.moveCell(this.cursor.pos, this.DIR.d, this.base) 
+        }
+
+        if(this.Enter_key.isDown) {
+            this.makeNoise = false
+
+            const x = this.cursor.pos[0]
+            const y = this.cursor.pos[1]
+
+            this.placeRectData(this.cursor.pos, this.tileset)
+            this.makeNoise = true
+        }
+    }
+
+    moveable(){
+        return this.time.now - this.moved.at > this.moved.delay
     }
 
     draw(mapName, layerName, locked, shapeBase, noiseTileset){
