@@ -52,6 +52,7 @@ export default class MyScene extends Phaser.Scene {
             { length: this.base.length }, () => Array(this.base[0].length).fill(-1)
         )
         this.palletteCursor = {
+            startPos: [51, 37],
             pos: [51, 37],
             rect: this.drawRect([51, 37], { outline: this.STYLE.OUTLINE }),
             color: this.pallette[0][0]
@@ -96,9 +97,9 @@ export default class MyScene extends Phaser.Scene {
                         
                     if(this.tileAt(eTile, this.base) > 0) this.placeRectData(eTile, this.tileset)
                     this.makeNoise = true 
-                    this.clickPos = eTile 
                 } else if(this.palletteMap[eTile[1]][eTile[0]] !== -1){
                     this.palletteCursor.pos = [eTile[0], eTile[1]]
+                    this.clickPos = eTile 
                 }
             } 
         })
@@ -111,7 +112,9 @@ export default class MyScene extends Phaser.Scene {
                 const y = this.clickPos[1] * this.tileset.tilesize
 
                 // change color
-                this.changeColorAt([x, y], [e.position.x, e.position.y])
+                if(this.palletteMap[this.clickPos[1]][this.clickPos[0]] !== -1){ 
+                    this.changeColorAt([x, y], [e.position.x, e.position.y])
+                }
             }
         })
 
@@ -280,18 +283,25 @@ export default class MyScene extends Phaser.Scene {
     }
 
     changeColorAt(pos, to){
-        const color = {}
-        for(const rect of this.house){
-            if(rect.x === pos[0] && rect.y === pos[1]){
-                color.h = this.map(to[0], this.canvasDims.x[0], this.canvasDims.x[1], 0, 1)
-                color.s = 1
-                color.l = this.map(to[1], this.canvasDims.y[0], this.canvasDims.y[1], 0, 1)
+        const w = this.tileset.tilesize
+        const j = pos[1] / w
+        const i = pos[0] / w
 
-                rect.color = color
-            }
-        }
+        const col = {}
+        col.h = this.map(to[0], this.canvasDims.x[0], this.canvasDims.x[1], 0, 1)
+        col.s = 1
+        col.l = this.map(to[1], this.canvasDims.y[0], this.canvasDims.y[1], 0, 1)
 
-        this.addToPallette(color)
+        const hsl = Phaser.Display.Color.HSLToColor(col.h, col.s, col.l)
+
+        if(this.palletteMap[j][i]) this.palletteMap[j][i].destroy()
+        this.palletteMap[j][i] = this.add.rectangle(i * w, j * w, w, w)
+
+        this.palletteMap[j][i].setOrigin(0)
+        this.palletteMap[j][i].setStrokeStyle(2, 0x000000)
+        this.palletteMap[j][i].setFillStyle(hsl.color)
+
+        this.pallette[j - this.palletteCursor.startPos[1]][i - this.palletteCursor.startPos[0]] = col
     }
 
     drawPallette(startX, startY){
@@ -316,17 +326,14 @@ export default class MyScene extends Phaser.Scene {
             }
         }
 
-        if(this.palletteCursor.rect) this.palletteCursor.rect.destroy()
-        this.palletteCursor.rect = this.drawRect(
-            this.palletteCursor.pos, 
-            { outline: this.STYLE.OUTLINE }
-        )
-        this.palletteCursor.color = this.pallette[this.palletteCursor.pos[1] - startY][this.palletteCursor.pos[0] - startX]
-    }
-
-
-    addToPallette(color){
-
+        if(!this.clickPos){
+            if(this.palletteCursor.rect) this.palletteCursor.rect.destroy()
+            this.palletteCursor.rect = this.drawRect(
+                this.palletteCursor.pos, 
+                { outline: this.STYLE.OUTLINE }
+            )
+            this.palletteCursor.color = this.pallette[this.palletteCursor.pos[1] - startY][this.palletteCursor.pos[0] - startX]
+        }
     }
 
     map(val, origMin, origMax, newMin, newMax){
