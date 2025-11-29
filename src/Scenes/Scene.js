@@ -19,6 +19,11 @@ export default class MyScene extends Phaser.Scene {
                 width: [0, this.base[0].length - 1]
             }
         };
+
+        this.STYLE = {
+            OUTLINE: { stroke: 2, color: 0xffffff },
+            ORIGIN: 0,
+        }
     }
 
     create() {
@@ -36,19 +41,32 @@ export default class MyScene extends Phaser.Scene {
         this.color = {
             r: 0, g: 255, b: 255
         };
-        this.clickCount = 0
         this.clickPos = null
+
+        this.pallette = [
+            [{h: 0.00, s: 1, l: 0.5 }, {h: 0.30, s: 1, l: 0.5 }, {h: 0.80, s: 1, l: 0.5 }], 
+            [{h: 0.10, s: 1, l: 0.5 }, {h: 0.60, s: 1, l: 0.5 }, {h: 0.90, s: 1, l: 0.5 }], 
+            [{h: 0.15, s: 1, l: 0.5 }, {h: 0.75, s: 1, l: 0.5 }, {h: 1.00, s: 1, l: 1.0 }], 
+        ]
+        this.palletteMap = Array.from(
+            { length: this.base.length }, () => Array(this.base[0].length).fill(-1)
+        )
+        this.palletteCursor = {
+            pos: [51, 37],
+            rect: this.drawRect([51, 37], { outline: this.STYLE.OUTLINE }),
+            color: this.pallette[0][0]
+        }
 
         // NOISE 
         this.makeNoise = true
         
         // init
-        this.makeNoiseMap("noiseMap", "noiseLayer", "stateArray", this.base, this.tileset)
+        this.draw("noiseMap", "noiseLayer", "stateArray", this.base, this.tileset)
 
         // noise screen
         this.noise = this.time.addEvent({
             delay: 100, // ms
-            callback: this.makeNoiseMap,
+            callback: this.draw,
             args: ["noiseMap", "noiseLayer", "stateArray", this.base, this.tileset],
             callbackScope: this,
             loop: true,
@@ -61,27 +79,27 @@ export default class MyScene extends Phaser.Scene {
             const ePixel = [e.x, e.y]
 
             if(this.inRange(ePixel, this.canvasDims)) {
-                this.makeNoise = false
                 const eTile = this.pixelToTile(ePixel, this.tileset.tilesize)
 
-                // update cursor position
+                // update main cursor position
                 if(this.base[eTile[1]][eTile[0]] > 0){ 
+                    this.makeNoise = false
+
                     this.cursor.pos = [
                         eTile[0], 
                         eTile[1]
                     ]
+
+                    // lock tile    
+                    const x = eTile[0]  
+                    const y = eTile[1]  
+                        
+                    if(this.tileAt(eTile, this.base) > 0) this.placeRectData(eTile, this.tileset)
+                    this.makeNoise = true 
+                    this.clickPos = eTile 
+                } else if(this.palletteMap[eTile[1]][eTile[0]] !== -1){
+                    this.palletteCursor.pos = [eTile[0], eTile[1]]
                 }
-                
-                // lock tile
-                const x = eTile[0]
-                const y = eTile[1]
-
-                // this.stateArray[y][x] = this.tileAt(eTile, this.noiseArray);
-                this.clickCount++
-                if(this.tileAt(eTile, this.base) > 0) this.placeRectData(eTile, this.tileset)
-                this.makeNoise = true
-
-                this.clickPos = eTile
             } 
         })
 
@@ -122,10 +140,7 @@ export default class MyScene extends Phaser.Scene {
         })
     }
 
-    update() {
-    }
-
-    makeNoiseMap(mapName, layerName, locked, shapeBase, noiseTileset){
+    draw(mapName, layerName, locked, shapeBase, noiseTileset){
         if(!this.makeNoise) return;
 
         if(this[mapName]) this[mapName].destroy()
@@ -176,6 +191,24 @@ export default class MyScene extends Phaser.Scene {
         )
         this.cursor.rect.setOrigin(0)
         this.cursor.rect.setStrokeStyle(2, 0xffffff)
+
+        // pallette
+        this.drawPallette(51, 37);
+    }
+
+    drawRect(pos, style){
+        const w = this.tileset.tilesize
+
+        const rect = this.add.rectangle(pos[0] * w, pos[1] * w, w, w)
+        rect.setOrigin(this.STYLE.ORIGIN)
+
+        if(style.outline) rect.setStrokeStyle(style.outline.stroke, style.outline.color)
+        if(style.fill){ 
+            const col = Phaser.Display.Color.HSLToColor(style.fill.h, style.fill.s, style.fill.l)
+            rect.setFillStyle(col.color)
+        }
+
+        return rect
     }
 
     noiseField(baseData, lockedTiles, tiles){
@@ -237,9 +270,9 @@ export default class MyScene extends Phaser.Scene {
             w: tilesetInfor.tilesize, 
             h: tilesetInfor.tilesize,
             color: { 
-                h: this.map(x, this.canvasDims.x[0], this.canvasDims.x[1], 0, 1),
-                s: 1,
-                l: this.map(y, this.canvasDims.y[0], this.canvasDims.y[1], 0, 1),
+                h: this.palletteCursor.color.h,
+                s: this.palletteCursor.color.s,
+                l: this.palletteCursor.color.l,
             }
         }
         
@@ -247,13 +280,53 @@ export default class MyScene extends Phaser.Scene {
     }
 
     changeColorAt(pos, to){
+        const color = {}
         for(const rect of this.house){
             if(rect.x === pos[0] && rect.y === pos[1]){
-                rect.color.h = this.map(to[0], this.canvasDims.x[0], this.canvasDims.x[1], 0, 1)
-                rect.color.s = 1
-                rect.color.l = this.map(to[1], this.canvasDims.y[0], this.canvasDims.y[1], 0, 1)
+                color.h = this.map(to[0], this.canvasDims.x[0], this.canvasDims.x[1], 0, 1)
+                color.s = 1
+                color.l = this.map(to[1], this.canvasDims.y[0], this.canvasDims.y[1], 0, 1)
+
+                rect.color = color
             }
         }
+
+        this.addToPallette(color)
+    }
+
+    drawPallette(startX, startY){
+        const w = this.tileset.tilesize
+
+        for(let j = startY; j < startY + this.pallette.length; j++){
+            for(let i = startX; i < startX + this.pallette[0].length; i++){
+
+                if(this.palletteMap[j][i] !== -1) {
+                    this.palletteMap[j][i].destroy()
+                    this.palletteMap[j][i] = -1
+                }
+
+                const col = this.pallette[j - startY][i - startX]
+                const hsl = Phaser.Display.Color.HSLToColor(col.h, col.s, col.l)
+
+                this.palletteMap[j][i] = this.add.rectangle(i * w, j * w, w, w)
+
+                this.palletteMap[j][i].setOrigin(0)
+                this.palletteMap[j][i].setStrokeStyle(2, 0x000000)
+                this.palletteMap[j][i].setFillStyle(hsl.color)
+            }
+        }
+
+        if(this.palletteCursor.rect) this.palletteCursor.rect.destroy()
+        this.palletteCursor.rect = this.drawRect(
+            this.palletteCursor.pos, 
+            { outline: this.STYLE.OUTLINE }
+        )
+        this.palletteCursor.color = this.pallette[this.palletteCursor.pos[1] - startY][this.palletteCursor.pos[0] - startX]
+    }
+
+
+    addToPallette(color){
+
     }
 
     map(val, origMin, origMax, newMin, newMax){
