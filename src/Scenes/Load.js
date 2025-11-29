@@ -11,6 +11,7 @@ export default class Load extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", "base.json");     
     
         this.load.json('baseData', 'base.json'); 
+        this.load.json('messages', 'messages.json'); 
     }
 
     create() {
@@ -21,6 +22,8 @@ export default class Load extends Phaser.Scene {
             name: 'base'
         }).run();
 
-        this.scene.start("sceneKey", { base: baseData }); // start next scene
+        const messages = this.cache.json.get('messages')
+
+        this.scene.start("sceneKey", { base: baseData, messages: messages }); // start next scene
     }
 }
