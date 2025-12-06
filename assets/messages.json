@@ -134,7 +134,11 @@
         {
             "txt": "and the sky goes orange once more; he is back in office",
             "confirm": "ok"
-        },        
+        },   
+        {
+            "txt": "the scary of this world burns brighter than hope, sometimes",
+            "confirm": "ok"
+        },           
         {
             "txt": "to raise a child in this world",
             "confirm": "ok"
