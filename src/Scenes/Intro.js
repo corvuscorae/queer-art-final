@@ -75,7 +75,7 @@ export default class Intro extends Phaser.Scene {
       this.dialogClick = true;
     }
 
-    if(this.messages.intro == 0){
+    if(this.messages.intro == 0 && this.dialog.on == false){
         this.Enter_key.isDown == false
         this.Enter_key.isUp == false
 
