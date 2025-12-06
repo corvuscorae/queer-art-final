@@ -1,54 +1,264 @@
 {
     "intro": [
-        "intro test 1; Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean finibus nibh tortor, in pharetra dui rutrum vel. Praesent ac tristique lorem, sit amet facilisis urna. Nam orci ipsum, pharetra quis eros vel, viverra viverra massa. Morbi sed interdum felis. Praesent at felis in lacus tincidunt commodo ac in diam. Cras. ",
-        "intro test 2; Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean finibus nibh tortor, in pharetra dui rutrum vel. Praesent ac tristique lorem, sit amet facilisis urna. Nam orci ipsum, pharetra quis eros vel, viverra viverra massa. Morbi sed interdum felis. Praesent at felis in lacus tincidunt commodo ac in diam. Cras. ",
-        "intro test 3; Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean finibus nibh tortor, in pharetra dui rutrum vel. Praesent ac tristique lorem, sit amet facilisis urna. Nam orci ipsum, pharetra quis eros vel, viverra viverra massa. Morbi sed interdum felis. Praesent at felis in lacus tincidunt commodo ac in diam. Cras. "
+        {
+            "txt": "it's simple, really",
+            "confirm": "ok"
+        },
+        {
+            "txt": "this is the life you get:",
+            "confirm": "ok"
+        },
+        {
+            "txt": "a husband and wife, 1.5 kids, a dog. white picket fence and big green yard.",
+            "confirm": "ok"
+        },
+        {
+            "txt": "this is",
+            "confirm": "ok"
+        }, 
+        {
+            "txt": "the life",
+            "confirm": "ok"
+        },
+        {
+            "txt": "the only life",
+            "confirm": "ok"
+        }, 
+        {
+            "txt": "you get.",
+            "confirm": "ok"
+        }
     ],
 
     "body": [
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",       
-        "body test",        
-        "body test",
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",       
-        "body test",        
-        "body test",
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",       
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",        
-        "body test",       
-        "body test",        
-        "body test",        
-        "body test",
-        "LAST"
+        {
+            "txt": "i thought a lot about love when i was young",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "imaginary men who'd sweep me off my feet",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "then, happily ever after",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "and then i turned 20 and met the love of my life",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "two brides took to the altar",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "two brides picture a future together",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "a wife and wife, 1.5 kids, a dog. white picket fence and big green yard.",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "we live in a duplex with six other people",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "we convince our roommates to let us get a dog",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "box checked, we look to the future",
+            "confirm": "ok"
+        },       
+        {
+            "txt": "1.5 kids, white picket fence, big green yard",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "thousands of dollars in debt",
+            "confirm": "ok"
+        },
+        {
+            "txt": "we find a new small room to squeeze into, pressed flush together, no room to breathe but the cycle of breath from our lungs",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "we work, work, work. scoll zillow on the weekends. plot savings plans",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "and then the world ends",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "pandemic shutdown trumpism. the sky turns orange three times in 1.5 years",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "clung fast to one another, we make it ashore",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "1.5 kids, white picket fence, big green yard",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "1.5 kids, white picket fence, (we don't need a big yard, really)",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "my wife would be the one to carry",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "my wife approaches the far edge of the age range when it is safe",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "can i do it? can i do it? can i do it?",
+            "confirm": "ok"
+        },       
+        {
+            "txt": "(she tells me i dont have to; there's always adoption)",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "1.5 kids, white picket fence",
+            "confirm": "ok"
+        },
+        {
+            "txt": "thousands in debt become tens of thousands. college, baby",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "and the sky goes orange once more; he is back in office",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "and gaza is levelled by genocide and my neighbors are being disappeared and there is a shooting every day",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "to raise a child in this world",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "who could raise a child in this world?",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "1.5 kids, white picket fence",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "1.5 kids, (a place where we are safe, a place to call our own)",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "i list the things i'd need to carry our child",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "get fit, get therapy, get a career, get a home",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "our dog's face is slowly turning white",
+            "confirm": "ok"
+        },       
+        {
+            "txt": "i become unburdened",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "dr. daniel jacobs from the gender confirmation center removes 7 pounds and 2 ounces of flesh from my chest",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "with it goes my back pain and dysphoria",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "with it goes the possibility to ever nurse our child",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "can i do it?",
+            "confirm": "ok"
+        },       
+        {
+            "txt": "she knows i don't want to; she doesn't want me to, either",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "adoption is an option now, but who knows?",
+            "confirm": "ok"
+        },        
+        {
+            "txt": "and is adoption even ethical?",
+            "confirm": "ok"
+        },
+        {
+            "txt": "can i do it? can i do it? can i do it? can i do it? can i do it? can i do it? can i do it? can i do it? can i do it? can i do it? can i",
+            "confirm": "ok"
+        },
+        {
+            "txt": "i can't",
+            "confirm": "ok"
+        },
+        {
+            "txt": "i can't do it",
+            "confirm": "ok"
+        },
+        {
+            "txt": "but she would make such an excellent mother",
+            "confirm": "ok"
+        },
+        {
+            "txt": "i ask her, \"what if we never have kids?\"",
+            "confirm": "ok"
+        },
+        {
+            "txt": "guilt lives in the hollow of my throat. i could cry",
+            "confirm": "ok"
+        },
+        {
+            "txt": "she shrugs, smiles",
+            "confirm": "ok"
+        },
+        {
+            "txt": "\"we'll have lots of dogs\"",
+            "confirm": "ok"
+        },
+        {
+            "txt": "a wife and wife, lots of dogs. somewhere safe that's ours.",
+            "confirm": "ok"
+        },
+        {
+            "txt": "our friends and two cats, someday",
+            "confirm": "ok"
+        },
+        {
+            "txt": "her parents and my grandma, all of our siblings",
+            "confirm": "ok"
+        },
+        {
+            "txt": "cousins by blood and starlight",
+            "confirm": "ok"
+        },
+        {
+            "txt": "an open door to somewhere warm",
+            "confirm": "ok"
+        },
+        {
+            "txt": "and her and me",
+            "confirm": "ok"
+        },
+        {
+            "txt": "and the rest of our lives",
+            "confirm": "ok"
+        }
     ]
 }
 
