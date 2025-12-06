@@ -24,6 +24,6 @@ export default class Load extends Phaser.Scene {
 
         const messages = this.cache.json.get('messages')
 
-        this.scene.start("sceneKey", { base: baseData, messages: messages }); // start next scene
+        this.scene.start("introScene", { base: baseData, messages: messages }); // start next scene
     }
 }

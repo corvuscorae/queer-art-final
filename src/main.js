@@ -1,6 +1,7 @@
 "use strict" // debug with extreme prejudice
 
 import Load from "./Scenes/Load.js";
+import Intro from "./Scenes/Intro.js";
 import MyScene from "./Scenes/Scene.js";
 
 // game config
@@ -12,7 +13,7 @@ let config = {
     },
     width: 1280,
     height: 800,
-    scene: [Load, MyScene]
+    scene: [Load, Intro, MyScene]
 }
 
 // globals

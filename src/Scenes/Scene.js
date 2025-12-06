@@ -54,8 +54,13 @@ export default class MyScene extends Phaser.Scene {
   }
 
   create() {
-    this.dialogClick = true;
-    this.showNextMessage(this.messages.intro);
+    this.keys = {
+      W_key: this.input.keyboard.addKey("W"),
+      A_key: this.input.keyboard.addKey("A"),
+      S_key: this.input.keyboard.addKey("S"),
+      D_key: this.input.keyboard.addKey("D"),
+      Enter_key: this.input.keyboard.addKey("Enter"),
+    }
 
     this.makeNoise = true;
 
@@ -168,47 +173,42 @@ export default class MyScene extends Phaser.Scene {
       delay: 100,
     };
 
-    // keys
-    this.W_key = this.input.keyboard.addKey("W");
-    this.A_key = this.input.keyboard.addKey("A");
-    this.S_key = this.input.keyboard.addKey("S");
-    this.D_key = this.input.keyboard.addKey("D");
-
-    this.Enter_key = this.input.keyboard.addKey("Enter");
-
     this.makeNoise = false;
   }
 
   update() {
-    if (this.Enter_key.isDown) {
-      if (this.dialog.on && this.dialogClick){
+    if (this.keys.Enter_key.isDown) {
+      if (this.dialog && this.dialog.on && this.dialogClick){
         document.getElementById("confirmBtn").click();
       }
       this.dialogClick = false;
     }
-    if (this.Enter_key.isUp) {
+    if (this.keys.Enter_key.isUp) {
       this.dialogClick = true;
     }
 
+    if (this.dialog && this.dialog.on) return;
+
+
     // moving cursor
-    if (this.moveable() && this.W_key.isDown) {
+    if (this.moveable() && this.keys.W_key.isDown) {
       this.moved.at = this.time.now;
       this.moveCell(this.cursor.pos, this.DIR.w, this.base);
     }
-    if (this.moveable() && this.A_key.isDown) {
+    if (this.moveable() && this.keys.A_key.isDown) {
       this.moved.at = this.time.now;
       this.moveCell(this.cursor.pos, this.DIR.a, this.base);
     }
-    if (this.moveable() && this.S_key.isDown) {
+    if (this.moveable() && this.keys.S_key.isDown) {
       this.moved.at = this.time.now;
       this.moveCell(this.cursor.pos, this.DIR.s, this.base);
     }
-    if (this.moveable() && this.D_key.isDown) {
+    if (this.moveable() && this.keys.D_key.isDown) {
       this.moved.at = this.time.now;
       this.moveCell(this.cursor.pos, this.DIR.d, this.base);
     }
 
-    if (this.Enter_key.isDown) {
+    if (this.keys.Enter_key.isDown) {
       this.makeNoise = false;
 
       const x = this.cursor.pos[0];
@@ -391,7 +391,7 @@ export default class MyScene extends Phaser.Scene {
   }
 
   placeRectData(pos, tilesetInfor) {
-    if (this.dialog.on === true) return;
+    if (this.dialog && this.dialog.on === true) return;
     if (!this.houseTileFilled(pos)) this.clicks.lastUnlock++;
 
     const x = pos[0] * tilesetInfor.tilesize;

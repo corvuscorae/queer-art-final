@@ -40,15 +40,15 @@
             "confirm": "ok"
         },        
         {
-            "txt": "then, happily ever after",
+            "txt": "then, we'd ride off into the sunset: happily ever after",
             "confirm": "ok"
         },        
         {
-            "txt": "and then i turned 20 and met the love of my life",
+            "txt": "and then i meet the actual love of my life",
             "confirm": "ok"
-        },        
+        },
         {
-            "txt": "two brides took to the altar",
+            "txt": "shortly thereafter, two brides take to the altar",
             "confirm": "ok"
         },        
         {
@@ -168,7 +168,7 @@
             "confirm": "ok"
         },       
         {
-            "txt": "i become unburdened",
+            "txt": "one decemeber, i become unburdened",
             "confirm": "ok"
         },        
         {
@@ -197,6 +197,14 @@
         },        
         {
             "txt": "and is adoption even ethical?",
+            "confirm": "ok"
+        },
+        {
+            "txt": "can i do it?",
+            "confirm": "ok"
+        },
+        {
+            "txt": "can i do it?",
             "confirm": "ok"
         },
         {
@@ -229,6 +237,10 @@
         },
         {
             "txt": "\"we'll have lots of dogs\"",
+            "confirm": "ok"
+        },
+        {
+            "txt": "she takes my hand and turns back to the sunrise",
             "confirm": "ok"
         },
         {
