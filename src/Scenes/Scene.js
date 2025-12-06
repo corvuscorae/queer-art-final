@@ -26,18 +26,18 @@ export default class MyScene extends Phaser.Scene {
       ORIGIN: 0,
     };
 
-    let tileCount = 0
-    for(let j = 0; j < this.base.length; j++){
-        for(let i = 0; i < this.base[0].length; i++){
-            if(this.base[j][i] > 0) tileCount++
-        }
+    let tileCount = 0;
+    for (let j = 0; j < this.base.length; j++) {
+      for (let i = 0; i < this.base[0].length; i++) {
+        if (this.base[j][i] > 0) tileCount++;
+      }
     }
 
     this.clicks = {
-        lastUnlock: 0,
-        unlockThreshold: Math.floor(tileCount / this.messages.body.length) - 1,
-        logged: 0
-    }
+      lastUnlock: 0,
+      unlockThreshold: 6, // Math.floor(tileCount / this.messages.body.length) - 1,
+      logged: 0,
+    };
   }
 
   showNextMessage(messages) {
@@ -45,14 +45,19 @@ export default class MyScene extends Phaser.Scene {
       const m = messages.shift();
       this.confirm(
         m,
-        (args) => { this.showNextMessage(args); },
+        (args) => {
+          this.showNextMessage(args);
+        },
         messages
       );
     }
   }
 
   create() {
-    this.makeNoise = true
+    this.dialogClick = true;
+    this.showNextMessage(this.messages.intro);
+
+    this.makeNoise = true;
 
     // var colorPicker = new iro.ColorPicker('#picker');
     console.log("Scene loaded");
@@ -171,11 +176,20 @@ export default class MyScene extends Phaser.Scene {
 
     this.Enter_key = this.input.keyboard.addKey("Enter");
 
-    this.makeNoise = false
-    this.showNextMessage(this.messages.intro) 
+    this.makeNoise = false;
   }
 
   update() {
+    if (this.Enter_key.isDown) {
+      if (this.dialog.on && this.dialogClick){
+        document.getElementById("confirmBtn").click();
+      }
+      this.dialogClick = false;
+    }
+    if (this.Enter_key.isUp) {
+      this.dialogClick = true;
+    }
+
     // moving cursor
     if (this.moveable() && this.W_key.isDown) {
       this.moved.at = this.time.now;
@@ -195,22 +209,42 @@ export default class MyScene extends Phaser.Scene {
     }
 
     if (this.Enter_key.isDown) {
-        if(this.dialog.on) document.getElementById("confirmBtn").click()
       this.makeNoise = false;
 
       const x = this.cursor.pos[0];
       const y = this.cursor.pos[1];
 
-      this.placeRectData(this.cursor.pos, this.tileset)
+      this.placeRectData(this.cursor.pos, this.tileset);
       this.makeNoise = true;
     }
 
-    if(this.clicks.lastUnlock > this.clicks.unlockThreshold){
-        this.clicks.logged += this.clicks.lastUnlock
-        this.clicks.lastUnlock = 0;
-        if(this.messages.body.length > 0){
-            this.showNextMessage([this.messages.body.shift()])
-        }
+    if (this.clicks.lastUnlock > this.clicks.unlockThreshold) {
+      this.clicks.logged += this.clicks.lastUnlock;
+      this.clicks.lastUnlock = 0;
+      if (this.messages.body.length > 0) {
+        this.showNextMessage([this.messages.body.shift()]);
+      }
+    }
+
+    if (this.messages.body.length <= 0) {
+      this.add
+        .text(window.GAME.config.width / 2, 100, "HOME", {
+          fontSize: "128px",
+          fill: "#ffffffff",
+        })
+        .setOrigin(0.5, 0.5);
+
+      this.add
+        .text(
+          window.GAME.config.width / 2,
+          window.GAME.config.height - 100,
+          "by raven Ruiz",
+          {
+            fontSize: "18px",
+            fill: "#ffffffff",
+          }
+        )
+        .setOrigin(0.5, 0.5);
     }
   }
 
@@ -219,6 +253,7 @@ export default class MyScene extends Phaser.Scene {
   }
 
   draw(mapName, layerName, locked, shapeBase, noiseTileset) {
+    if (this.dialog && this.dialog.on) return;
     if (!this.makeNoise) return;
 
     if (this[mapName]) this[mapName].destroy();
@@ -356,8 +391,8 @@ export default class MyScene extends Phaser.Scene {
   }
 
   placeRectData(pos, tilesetInfor) {
-    if(this.dialog.on === true) return
-    if(!this.houseTileFilled(pos)) this.clicks.lastUnlock++
+    if (this.dialog.on === true) return;
+    if (!this.houseTileFilled(pos)) this.clicks.lastUnlock++;
 
     const x = pos[0] * tilesetInfor.tilesize;
     const y = pos[1] * tilesetInfor.tilesize;
@@ -377,13 +412,16 @@ export default class MyScene extends Phaser.Scene {
     this.house.push(rect);
   }
 
-  houseTileFilled(pos){
-    for(const tile of this.house){
-        if (tile.x === pos[0] * this.tileset.tilesize && 
-            tile.y === pos[1] * this.tileset.tilesize) return true
+  houseTileFilled(pos) {
+    for (const tile of this.house) {
+      if (
+        tile.x === pos[0] * this.tileset.tilesize &&
+        tile.y === pos[1] * this.tileset.tilesize
+      )
+        return true;
     }
 
-    return false
+    return false;
   }
 
   changeColorAt(pos, to) {
@@ -451,11 +489,11 @@ export default class MyScene extends Phaser.Scene {
     this.makeNoise = false;
 
     this.dialog = document.createElement("div");
-      this.dialog.style.cssText = `
+    this.dialog.style.cssText = `
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: ${window.GAME.config.height / 2 - 50}px;
+            left: ${window.GAME.config.width / 2 - 100}px;
+            max-width: 400px;
             background: white;
             padding: 30px;
             border-radius: 10px;
@@ -463,20 +501,21 @@ export default class MyScene extends Phaser.Scene {
             z-index: 10000;
         `;
 
-      document.body.appendChild(this.dialog);
+    document.body.appendChild(this.dialog);
 
-      this.dialog.innerHTML = `
-        <p style="margin-bottom: 20px;">${message}</p>
-        <button id="confirmBtn">OK</button>
-    `;
-      this.dialog.style.display = "fixed";
-      this.dialog.on = true
+    this.dialog.innerHTML = `
+        <p style="margin-bottom: 20px;">${message.txt}</p>
+        <button id="confirmBtn">${message.confirm}</button>
+      `;
 
-      document.getElementById("confirmBtn").onclick = () => {
-        document.body.removeChild(this.dialog);
-        this.dialog.on = false
-        this.makeNoise = true
-        callback(args)
-      };
+    this.dialog.style.display = "fixed";
+    this.dialog.on = true;
+
+    document.getElementById("confirmBtn").onclick = () => {
+      document.body.removeChild(this.dialog);
+      this.dialog.on = false;
+      this.makeNoise = true;
+      callback(args);
+    };
   }
 }
