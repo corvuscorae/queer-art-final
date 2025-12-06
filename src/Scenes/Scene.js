@@ -227,6 +227,8 @@ export default class MyScene extends Phaser.Scene {
     }
 
     if (this.messages.body.length <= 0) {
+      document.title = "HOME"
+
       this.add
         .text(window.GAME.config.width / 2, 100, "HOME", {
           fontSize: "128px",
