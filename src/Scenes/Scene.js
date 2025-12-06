@@ -62,6 +62,7 @@ export default class MyScene extends Phaser.Scene {
       Enter_key: this.input.keyboard.addKey("Enter"),
     }
 
+    this.titleDrawn = false
     this.makeNoise = true;
 
     // var colorPicker = new iro.ColorPicker('#picker');
@@ -226,7 +227,7 @@ export default class MyScene extends Phaser.Scene {
       }
     }
 
-    if (this.messages.body.length <= 0) {
+    if (this.messages.body.length <= 0 && !this.titleDrawn) {
       document.title = "HOME"
 
       this.add
@@ -247,6 +248,8 @@ export default class MyScene extends Phaser.Scene {
           }
         )
         .setOrigin(0.5, 0.5);
+
+        this.titleDrawn = true
     }
   }
 
